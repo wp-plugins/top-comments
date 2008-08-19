@@ -1,0 +1,161 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Top Comments\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-08-19 16:16-0800\n"
+"Last-Translator: Andrew Ozz\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../top-comments.php:36
+#: ../top-comments.php:38
+msgid "Current score: "
+msgstr ""
+
+#: ../top-comments.php:38
+msgid "to vote for this comment, please visit the site"
+msgstr ""
+
+#: ../top-comments.php:46
+msgid "Current score:"
+msgstr ""
+
+#: ../top-comments.php:78
+msgid "Please enable JavaScript to vote."
+msgstr ""
+
+#: ../top-comments.php:130
+msgid "Score: "
+msgstr ""
+
+#: ../top-comments.php:164
+#: ../top-comments.php:209
+#: ../top-comments.php:210
+#: ../top-comments.php:273
+#: ../top-comments.php:294
+msgid "Top Comments"
+msgstr ""
+
+#: ../top-comments.php:192
+msgid "Title:"
+msgstr ""
+
+#: ../top-comments.php:194
+msgid "Number of comments to show:"
+msgstr ""
+
+#: ../top-comments.php:196
+msgid "(at most 10)"
+msgstr ""
+
+#: ../top-comments.php:208
+msgid "The top rated comments"
+msgstr ""
+
+#: ../top-comments.php:280
+msgid "+1"
+msgstr ""
+
+#: ../top-comments.php:289
+msgid "Settings saved"
+msgstr ""
+
+#: ../top-comments.php:295
+msgid "Select type and style for the voting button."
+msgstr ""
+
+#: ../top-comments.php:300
+msgid "Presets:"
+msgstr ""
+
+#: ../top-comments.php:323
+#: ../top-comments.php:369
+#: ../top-comments.php:425
+msgid "Thumbs up!"
+msgstr ""
+
+#: ../top-comments.php:329
+#: ../top-comments.php:381
+msgid "Love it!"
+msgstr ""
+
+#: ../top-comments.php:331
+#: ../top-comments.php:385
+msgid "The best!"
+msgstr ""
+
+#: ../top-comments.php:391
+msgid "Button:"
+msgstr ""
+
+#: ../top-comments.php:396
+msgid "Style:"
+msgstr ""
+
+#: ../top-comments.php:401
+msgid "Time limit:"
+msgstr ""
+
+#: ../top-comments.php:402
+msgid "Allow voting for comments on older posts for: "
+msgstr ""
+
+#: ../top-comments.php:404
+msgid "one week"
+msgstr ""
+
+#: ../top-comments.php:405
+msgid "two weeks"
+msgstr ""
+
+#: ../top-comments.php:406
+msgid "one month"
+msgstr ""
+
+#: ../top-comments.php:407
+msgid "three months"
+msgstr ""
+
+#: ../top-comments.php:408
+msgid "forever"
+msgstr ""
+
+#: ../top-comments.php:414
+msgid "Save Settings"
+msgstr ""
+
+#: ../top-comments.php:445
+msgid "Internal error. Please try again later."
+msgstr ""
+
+#: ../top-comments.php:445
+msgid "Connection timed out. Please try again later."
+msgstr ""
+
+#: ../top-comments.php:609
+msgid "Error: Invalid cookie."
+msgstr ""
+
+#: ../top-comments.php:611
+msgid "Error: You have already rated this comment."
+msgstr ""
+
+#: ../top-comments.php:615
+msgid "Error: Bad request."
+msgstr ""
+
+#: ../top-comments.php:628
+msgid "Cheatin’ uh?"
+msgstr ""
+
+#: ../top-comments.php:639
+msgid "Voting for this comment is closed."
+msgstr ""
+
