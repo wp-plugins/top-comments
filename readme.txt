@@ -1,5 +1,5 @@
 === Top Comments ===
-Contributors: azaozz,
+Contributors: azaozz
 Donate link: 
 Tags: comments, ajax, ratings, vote
 Requires at least: 2.6
@@ -14,7 +14,7 @@ Top Comments is a simple, easy to setup and manage comments rating plugin. It ad
 
 The plugin uses AJAX to process the votes and has several methods to prevent cheating (multiple consecutive votes). It also can display the top rated comments in the sidebar by using template tag or widget. 
 
-Uses the JavaScript anti-bot checks from [WP-Hashcash](http://wordpress.org/extend/plugins/wp-hashcash/) by [ecb29](http://wordpress.org/extend/plugins/profile/ecb29) and [donncha](http://wordpress.org/extend/plugins/profile/donncha). The "Thumbs Up" icon is by [Matt Thomas](http://iammattthomas.com/).
+Uses the JavaScript anti-bot checks from [WP-Hashcash](http://wordpress.org/extend/plugins/wp-hashcash/) by [ecb29](http://wordpress.org/extend/plugins/profile/ecb29) and [donncha](http://wordpress.org/extend/plugins/profile/donncha).
 
 == Installation ==
 
