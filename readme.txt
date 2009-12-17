@@ -3,7 +3,7 @@ Contributors: azaozz
 Donate link: 
 Tags: comments, ajax, ratings, vote
 Requires at least: 2.6
-Tested up to: 2.6.1
+Tested up to: 2.9
 Stable tag: 1.0
 
 Simple, easy to manage comments rating.
