@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/top-comments/
 Description: Simple, easy to manage comments rating.
 Author: Andrew Ozz
 Author URI: azaozz.wordpress.com
-Version: 1.0
+Version: 1.1-beta
 */
 
 /*
@@ -32,11 +32,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // Appends the comments rating button and the current rating to the comment.
 function topc_template($text) {
 
-	if ( is_admin() || defined('DOING_AJAX') )
-		$str =  "\n".'<p class="top-comments" style="color:#888;"><small>' . __('Current score: ', 'topc') . '</small> ' . topc_display_ratings() . '</p>';
-	elseif ( is_feed() )
+	if ( is_admin() || defined('DOING_AJAX') ) {
+		$str =  "\n".'<p class="top-comments"><small>' . __('Current score: ', 'topc') . '</small> ' . topc_display_ratings() . '</p>';
+	} elseif ( is_feed() ) {
 		$str =  '<p class="top-comments">' . __('Current score: ', 'topc') . topc_display_ratings() . ' <small>(' . __('to vote for this comment, please visit the site', 'topc') . ')</small></p>';
-	else {
+	} else {
 		global $post, $topc_expire;
 
 		if ( ! isset($topc_expire) )
@@ -60,6 +60,7 @@ function topc_style() {
 	.top-comments img { display: inline; padding: 0 !important; margin: 0 !important; border: 0 !important; vertical-align: text-top; cursor: pointer; }
 	.top-comments-button { <?php echo $topc_display_opt['css']; ?> }
 	.top-comments { cursor: default; }
+	.top-comments small { color: #888; }
 	</style>
 <?php	}
 }
@@ -157,46 +158,56 @@ function topc_timelimit($m) {
 }
 
 // Widget
-function topc_widget($args) {
-	global $wpdb;
-	extract($args, EXTR_SKIP);
-	$options = get_option('topc-widget');
-	$title = empty($options['title']) ? __('Top Comments', 'topc') : apply_filters('widget_title', $options['title']);
-	if ( !$number = (int) $options['number'] )
-		$number = 5;
-	else if ( $number < 1 )
-		$number = 1;
-	else if ( $number > 10 )
-		$number = 10;
+class Widget_TOPC_Top_Rated extends WP_Widget {
 
-	echo $before_widget;
-	echo $before_title . $title . $after_title;
-	topc_highest_rated($number);
-	echo $after_widget;
-}
+	function Widget_TOPC_Top_Rated() {
+		$widget_ops = array('classname' => 'topc_widget', 'description' => __('The top rated comments', 'topc') );
+		$this->WP_Widget('topc-comments', __('Top Comments', 'topc'), $widget_ops);
 
-function topc_widget_control() {
-	$options = $newoptions = get_option('topc-widget');
-	if ( $_POST["topc-submit"] ) {
-		$newoptions['title'] = strip_tags(stripslashes($_POST["topc-title"]));
-		$newoptions['number'] = (int) $_POST["topc-number"];
+		if ( is_active_widget('topc_widget') )
+			add_action('wp_head', 'topc_hrated_style');
 	}
-	if ( $options != $newoptions ) {
-		$options = $newoptions;
-		update_option('topc-widget', $options);
+
+	function widget( $args, $instance ) {
+		extract($args);
+		$number = !empty($instance['number']) ? (int) $instance['number'] : 5;
+		$title = empty($options['title']) ? '' : apply_filters('widget_title', $instance['title']);
+
+		echo $before_widget;
+		if ( $title )
+			echo $before_title . $title . $after_title;
+		topc_highest_rated($number);
+		echo $after_widget;
 	}
-	$title = attribute_escape($options['title']);
-	if ( !$number = (int) $options['number'] )
-		$number = 5;
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$new_instance = wp_parse_args( (array) $new_instance, array( 'title' => '', 'number' => 5 ) );
+		$instance['title'] = strip_tags($new_instance['title']);
+		$number = (int) $new_instance['number'];
+		if ( $number < 1 )
+			$number = 1;
+		else if ( $number > 10 )
+			$number = 10;
+		$instance['number'] = $number;
+
+		return $instance;
+	}
+
+	function form( $instance ) {
+		$instance = wp_parse_args( (array) $instance, array( 'title' => '', 'count' => 0, 'dropdown' => '') );
+		$title = strip_tags($instance['title']);
+		if ( !$number = (int) $instance['number'] )
+			$number = 5;
 ?>
-		<p><label for="topc-title"><?php _e('Title:'); ?> <input class="widefat" id="topc-title" name="topc-title" type="text" value="<?php echo $title; ?>" /></label></p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:', 'topc'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /></p>
 		<p>
-			<label for="topc-number"><?php _e('Number of comments to show:'); ?> <input style="width: 25px; text-align: center;" id="topc-number" name="topc-number" type="text" value="<?php echo $number; ?>" /></label>
+			<label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of comments to show:', 'topc'); ?> <input style="width: 25px; text-align: center;" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" /></label>
 			<br />
-			<small><?php _e('(at most 10)'); ?></small>
+			<small><?php _e('(at most 10)', 'topc'); ?></small>
 		</p>
-		<input type="hidden" id="topc-submit" name="topc-submit" value="1" />
 <?php
+	}
 }
 
 function topc_hrated_style() { ?>
@@ -205,12 +216,7 @@ function topc_hrated_style() { ?>
 }
 
 function topc_widget_register() {
-	$widget_ops = array( 'description' => __('The top rated comments', 'topc') );
-	wp_register_sidebar_widget('topc-comments', __('Top Comments', 'topc'), 'topc_widget', $widget_ops);
-	wp_register_widget_control('topc-comments', __('Top Comments', 'topc'), 'topc_widget_control');
-
-	if ( is_active_widget('topc_widget') )
-		add_action('wp_head', 'topc_hrated_style');
+	register_widget('Widget_TOPC_Top_Rated');
 }
 add_action('widgets_init', 'topc_widget_register');
 
@@ -594,8 +600,8 @@ function topc_wphc_check() {
 	return false;
 }
 
-function topc_update($comment_id) {
-    global $wpdb;
+function topc_update() {
+    global $wpdb, $topc_comment_id;
 
 	if ( ! topc_wphc_check() ) // it's a bot
 		exit('1');
@@ -603,16 +609,16 @@ function topc_update($comment_id) {
 	load_plugin_textdomain('topc', '', '/top-comments/languages');
 
 	// (check cookies first)
-	$check_cookie = topc_cookiecheck($comment_id);
+	$check_cookie = topc_cookiecheck($topc_comment_id);
 
 	if ( 0 === $check_cookie )
-		exit ( js_escape('error|'.__('Error: Invalid cookie.', 'topc')).'|' );
+		exit ( js_escape( 'error|' . __('Error: Invalid cookie.', 'topc') ) . '|' );
 	elseif ( $check_cookie )
-		exit ( js_escape('error|'.__('Error: You have already rated this comment.', 'topc')).'|' );
+		exit ( js_escape( 'error|' . __('Error: You have already rated this comment.', 'topc') ) . '|' );
 
-	$comment = get_comment($comment_id);
+	$comment = get_comment($topc_comment_id);
 	if ( ! $comment )
-		exit ( js_escape('error|'.__('Error: Bad request.', 'topc')).'|' );
+		exit ( js_escape( 'error|' . __('Error: Bad request.', 'topc') ) . '|' );
 
 	$ip_array = (array) get_option('topc-ip-array');
 
@@ -623,43 +629,42 @@ function topc_update($comment_id) {
 			unset($ip_array[$k]);
 	}
 
-	$key = $comment_id.'_'.preg_replace( '/[^0-9.]/', '', $_SERVER['REMOTE_ADDR'] );
+	$key = $topc_comment_id . '_' . preg_replace( '/[^0-9.]/', '', $_SERVER['REMOTE_ADDR'] );
 	if ( array_key_exists( $key, $ip_array ) )
-		$error = __('Cheatin’ uh?', 'topc');
+		$error = __('Please try again later.', 'topc');
 
 	$ip_array[$key] = $time;
 	update_option('topc-ip-array', $ip_array);
 
 	if ( isset($error) )
-		exit ( js_escape('error|'.$error).'|' );
+		exit ( js_escape('error|' . $error) . '|' );
 
 	$post = get_post($comment->comment_post_ID);
 
 	if ( ! topc_timelimit($post->post_date_gmt) )
-		exit ( js_escape('error|'.__('Voting for this comment is closed.', 'topc')).'|' );
+		exit ( js_escape( 'error|' . __('Voting for this comment is closed.', 'topc') ) . '|' );
 
-	$cookie = $_COOKIE['topc_'.COOKIEHASH].'|'.$comment_id;
+	$cookie = $_COOKIE['topc_' . COOKIEHASH] . '|' . $topc_comment_id;
 	$expire = time() + 2592000; // 30 days
-	setcookie('topc_'.COOKIEHASH, $cookie, $expire, COOKIEPATH, COOKIE_DOMAIN);
+	setcookie('topc_' . COOKIEHASH, $cookie, $expire, COOKIEPATH, COOKIE_DOMAIN);
 
 	$karma = (int) $comment->comment_karma + 1;
-	$updated = $wpdb->query( $wpdb->prepare("UPDATE $wpdb->comments SET comment_karma = %d WHERE comment_ID = %d LIMIT 1", $karma, $comment_id) );
+	$updated = $wpdb->query( $wpdb->prepare("UPDATE $wpdb->comments SET comment_karma = %d WHERE comment_ID = %d LIMIT 1", $karma, $topc_comment_id) );
 
 	//This sends the data back to the js to process and show on the page
-	echo('done|'. $comment_id .'|'. $karma .'|');
+	echo('done|' . $topc_comment_id . '|' . $karma . '|');
 
 	topc_wphc_refresh();
 
 	if ( $karma > (int) get_option( 'topc-top-rated-last' ) )
 		topc_make_highest_rated();
+
+	die();
 }
 
 // ajax action
 $topc_comment_id = ( isset($_GET['topcid']) && isset($_GET['topcwphc']) ) ? (int) $_GET['topcid'] : 0;
 
-if ( $topc_comment_id ) {
-	topc_update($topc_comment_id);
-	exit;
-}
+if ( $topc_comment_id )
+	add_action( 'init', 'topc_update' );
 
-?>
